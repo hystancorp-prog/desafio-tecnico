@@ -11,8 +11,11 @@ function Home() {
   const [ordem, setOrdem] = useState("stars_desc")
   const [erro, setErro] = useState("")
   const [loading, setLoading] = useState(false)
+
+  // Recupera o último usuário buscado para preencher o campo ao voltar de outra página
   const [ultimoUsername, setUltimoUsername] = useState(() => sessionStorage.getItem("username") || "")
 
+  // Ao carregar a página, rebusca o último usuário caso exista no sessionStorage
   useEffect(() => {
     const username = sessionStorage.getItem("username")
     if (username) buscarUsuario(username)
@@ -21,6 +24,8 @@ function Home() {
   async function buscarUsuario(username) {
     if (!username.trim()) return
     setUltimoUsername(username)
+
+    // Salva o username para persistir a busca ao navegar entre páginas
     sessionStorage.setItem("username", username)
     setLoading(true)
     setErro("")
@@ -31,6 +36,8 @@ function Home() {
       const resUser = await fetch(`https://api.github.com/users/${username}`)
       if (!resUser.ok) throw new Error("Usuário não encontrado")
       const dataUser = await resUser.json()
+
+      // Busca até 100 repositórios para não perder repos com poucas estrelas
       const resRepos = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`)
       const dataRepos = await resRepos.json()
       setUser(dataUser)
@@ -42,6 +49,7 @@ function Home() {
     }
   }
 
+  // Cria uma cópia do array antes de ordenar para não mutar o estado original
   function ordenarRepos() {
     const sorted = [...repos]
     if (ordem === "stars_desc") sorted.sort((a, b) => b.stargazers_count - a.stargazers_count)

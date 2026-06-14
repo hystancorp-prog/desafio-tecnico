@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 
+// Mapeamento das cores por linguagem, seguindo o padrão visual do GitHub
 const LANG_COLORS = {
   JavaScript: "#f1e05a",
   TypeScript: "#3178c6",
@@ -37,6 +38,7 @@ function RepoList({ repos, ordem, setOrdem }) {
 
       <div className="flex flex-col gap-2">
         {repos.map(repo => (
+          // Ao clicar, passa os dados do repo via state para evitar uma nova requisição na página de detalhes
           <div
             key={repo.id}
             onClick={() => navigate("/repo", { state: repo })}
@@ -50,6 +52,7 @@ function RepoList({ repos, ordem, setOrdem }) {
               <p className="text-xs text-slate-500 mt-1 line-clamp-2">{repo.description}</p>
             )}
             {repo.language && (
+              // Fallback para cinza caso a linguagem não esteja no mapeamento
               <div className="flex items-center gap-1.5 mt-2">
                 <span
                   className="w-2.5 h-2.5 rounded-full inline-block"
